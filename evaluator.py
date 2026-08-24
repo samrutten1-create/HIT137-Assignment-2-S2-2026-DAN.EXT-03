@@ -2,6 +2,12 @@
 sampleInput = 'sample_input.txt'
 inputText = 'input.txt'
 outputText = 'output.txt'
+def welcome_banner():
+    width = 58
+    print("=" * width)
+    print("Evaluation tool".center(width))
+    print("=" * width)
+welcome_banner()
 try:
     with open(inputText, "r") as file:
         content = file.read()
@@ -25,3 +31,5 @@ for question in questions:
 with open(outputText, "w") as file:
     for r in results:
         file.write(f"Input: {r['input']}\nTree: {r['tree']}\nTokens: {r['tokens']}\nResult: {r['result']}\n\n")
+
+print(f"Results written to {outputText} successfully.")
