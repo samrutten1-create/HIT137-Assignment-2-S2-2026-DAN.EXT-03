@@ -1,5 +1,11 @@
 # HIT137-Assignment-2-S2-2026
 Python solutions for HIT137 Group Assignment 2 featuring a custom file encryption tool `cipher.py` and a functional recursive descent math expression evaluator `evaluator.py`.
+### Group Members:
+- Craig Brooks - S407148
+- Harrison Breen - S397322
+- Richard Tran - S384625
+- Sam Rutten - S332039
+
 
 ## Cipher Development History
 
