@@ -22,12 +22,12 @@ def get_shift_input(prompt_text: str) -> int:
 #Display welcome banner
 welcome_banner()
 # Get user inputs using the helper function
-shift1 = get_shift_input("Enter shift1 value (non-negative integer): ")
-shift2 = get_shift_input("Enter shift2 value (non-negative integer): ")
-rawText = 'raw_text.txt'
-encryptedText = 'encrypted_text.txt'
-decryptedText = 'decrypted_text.txt'
-def encrypt_file(shift1, shift2, input_path, output_path):
+shift_1 = get_shift_input("Enter shift1 value (non-negative integer): ")
+shift_2 = get_shift_input("Enter shift2 value (non-negative integer): ")
+raw_text = 'raw_text.txt'
+encrypted_text = 'encrypted_text.txt'
+decrypted_text = 'decrypted_text.txt'
+def encrypt_file(shift_1, shift_2, input_path, output_path):
     with open(input_path, 'r', encoding="utf-8") as file:
         text = file.read()   
     encryptedText = ''
@@ -35,45 +35,45 @@ def encrypt_file(shift1, shift2, input_path, output_path):
         if char.isalpha():
             if char.islower():
                 if (ord(char) - 97) <= 13:
-                    encryptedText += chr((ord(char) + (shift1 * shift2)))
+                    encryptedText += chr((ord(char) + (shift_1 * shift_2)))
                 else:
-                    encryptedText += chr((ord(char) - (shift1 + shift2)))
+                    encryptedText += chr((ord(char) - (shift_1 + shift_2)))
             elif char.isupper():
                 if (ord(char) - 65) <= 12:
-                    encryptedText += chr((ord(char) - shift1))
+                    encryptedText += chr((ord(char) - shift_1))
                 else:
-                    encryptedText += chr((ord(char) + (shift2**2)))
+                    encryptedText += chr((ord(char) + (shift_2**2)))
             else:
                 print(f"ERROR: ALPHABET CHARACTER '{char}' IS NOT UPPER OR LOWER CASE")
         elif char.isdigit():
-            encryptedText += str((int(char) + shift1-shift2)%10)
+            encryptedText += str((int(char) + shift_1 - shift_2) % 10)
         else:
             encryptedText += char
             continue
     with open(output_path, 'w', encoding="utf-8") as file:
         file.write(encryptedText)
-def create_decryption_map(shift1, shift2):
+def create_decryption_map(shift_1, shift_2):
     decrypt_map = {}
     # Lowercase a-z
     for char in "abcdefghijklmnopqrstuvwxyz":
         if char <= 'n':
-            encrypted_char = chr(ord(char) + (shift1 * shift2))
+            encrypted_char = chr(ord(char) + (shift_1 * shift_2))
         else:
-            encrypted_char = chr(ord(char) - (shift1 + shift2))
+            encrypted_char = chr(ord(char) - (shift_1 + shift_2))
         if encrypted_char in decrypt_map:
             print("COLLISION:",decrypt_map[encrypted_char],"and",char,"both encrypt to",repr(encrypted_char))
         decrypt_map[encrypted_char] = char
     for char in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
         if char <= 'M':
-            encrypted_char = chr(ord(char) - shift1)
+            encrypted_char = chr(ord(char) - shift_1)
         else:
-            encrypted_char = chr(ord(char) + (shift2 ** 2)) 
+            encrypted_char = chr(ord(char) + (shift_2 ** 2)) 
         if encrypted_char in decrypt_map:
             print("COLLISION:",decrypt_map[encrypted_char],"and",char,"both encrypt to",repr(encrypted_char))
         decrypt_map[encrypted_char] = char
     return decrypt_map
-def decrypt_file(shift1, shift2, input_path, output_path):
-    decrypt_map = create_decryption_map(shift1, shift2)
+def decrypt_file(shift_1, shift_2, input_path, output_path):
+    decrypt_map = create_decryption_map(shift_1, shift_2)
     with open(input_path, 'r', encoding="utf-8") as file:
         text = file.read()   
     decryptedText = ''
@@ -81,7 +81,7 @@ def decrypt_file(shift1, shift2, input_path, output_path):
         if char in decrypt_map:
             decryptedText += decrypt_map[char]
         elif char.isdigit():
-            decryptedText += str((int(char) - shift1 + shift2) % 10)
+            decryptedText += str((int(char) - shift_1 + shift_2) % 10)
         else:
             decryptedText += char
     with open(output_path, 'w', encoding="utf-8") as file:
@@ -98,6 +98,6 @@ def verify_files(file1, file2):
                 if i >= len(content2) or char != content2[i]:
                     errors += 1
             print(f"The files are not identical. Number of errors found: {errors}")
-encrypt_file(shift1, shift2, rawText, encryptedText)
-decrypt_file(shift1, shift2, encryptedText, decryptedText)
-verify_files(rawText, decryptedText)
+encrypt_file(shift_1, shift_2, raw_text, encrypted_text)
+decrypt_file(shift_1, shift_2, encrypted_text, decrypted_text)
+verify_files(raw_text, decrypted_text)

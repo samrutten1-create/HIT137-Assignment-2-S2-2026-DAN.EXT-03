@@ -1,7 +1,7 @@
 """Create a Python script named evaluator.py that reads math expressions line-by-line from an input file, evaluates them, and writes structured results to output.txt"""
-sampleInput = 'sample_input.txt'
-inputText = 'input.txt'
-outputText = 'output.txt'
+sample_input = 'sample_input.txt'
+input_text = 'input.txt'
+output_text = 'output.txt'
 def welcome_banner():
     width = 58
     print("=" * width)
@@ -9,11 +9,11 @@ def welcome_banner():
     print("=" * width)
 welcome_banner()
 try:
-    with open(inputText, "r") as file:
+    with open(input_text, "r") as file:
         content = file.read()
         print("Input file Exists and read successfully.")
 except FileNotFoundError:
-    with open(sampleInput, "r") as file:
+    with open(sample_input, "r") as file:
         content = file.read()
         print("Input file Doesnt Exist. Sample input file read successfully.")
 questions = content.splitlines()
@@ -28,8 +28,8 @@ for question in questions:
         tree = "not done yet"
         tokens = "not done yet"  
         results.append({"input": question,"tree": "Error", "tokens": "Error", "result": "Error"})
-with open(outputText, "w") as file:
+with open(output_text, "w") as file:
     for r in results:
         file.write(f"Input: {r['input']}\nTree: {r['tree']}\nTokens: {r['tokens']}\nResult: {r['result']}\n\n")
 
-print(f"Results written to {outputText} successfully.")
+print(f"Results written to {output_text} successfully.")
