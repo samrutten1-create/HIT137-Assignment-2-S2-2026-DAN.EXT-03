@@ -53,12 +53,29 @@ def tokens_to_string(tokens):
             )
 
     return " ".join(output)
-def parse_term(tokens, pos):
+def parse_primary(tokens, pos):
     if tokens[pos][0] == "NUM":
         value = int(tokens[pos][1])
+
         return ("number", value), pos + 1
 
     raise ValueError("Expected number")
+
+def parse_term(tokens, pos):
+    left, pos = parse_primary(tokens, pos)
+
+    while (
+        tokens[pos][0] == "OP"
+        and tokens[pos][1] in "*/%"
+    ):
+        operator = tokens[pos][1]
+        pos += 1
+
+        right, pos = parse_primary(tokens, pos)
+
+        left = ("binary", operator, left, right)
+
+    return left, pos
 
 def parse_eval(tokens, pos):
     left, pos = parse_term(tokens, pos)
