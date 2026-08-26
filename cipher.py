@@ -27,11 +27,11 @@ shift_2 = get_shift_input("Enter the second shift value: ")
 raw_text = 'raw_text.txt'
 encrypted_text = 'encrypted_text.txt'
 decrypted_text = 'decrypted_text.txt'
-def encrypt_file(shift_1, shift_2, input_path, output_path):
+def encrypt_file(shift_1: int,shift_2: int,input_path: str,output_path: str) -> None:
     with open(input_path, 'r', encoding="utf-8") as file:
         text = file.read()   
     encrypted_text = ''
-    for i, char in enumerate(text):
+    for char in text:
         if 'a' <= char <= 'n':
             position = ord(char) - ord('a')
             encrypted_text += chr(ord('a') + (position + shift_1 * shift_2) % 14)
@@ -44,14 +44,14 @@ def encrypt_file(shift_1, shift_2, input_path, output_path):
         elif 'N' <= char <= 'Z':
             position = ord(char) - ord('N')
             encrypted_text += chr(ord('N') + (position + shift_2 ** 2) % 13)
-        elif char.isdigit():
+        elif '0' <= char <= '9':
             encrypted_text += str((int(char) + shift_1 - shift_2) % 10)
         else:
             encrypted_text += char
             continue
     with open(output_path, 'w', encoding="utf-8") as file:
         file.write(encrypted_text)
-def decrypt_file(shift_1, shift_2, input_path, output_path):
+def decrypt_file(    shift_1: int,shift_2: int,input_path: str,output_path: str) -> None:
     with open(input_path, 'r', encoding="utf-8") as file:
         text = file.read()   
     decrypted_text = ''
@@ -69,24 +69,26 @@ def decrypt_file(shift_1, shift_2, input_path, output_path):
         elif 'N' <= char <= 'Z':
                     position = ord(char) - ord('N')
                     decrypted_text += chr(ord('N') + (position - shift_2 ** 2) % 13)
-        elif char.isdigit():
+        elif '0' <= char <= '9':
             decrypted_text += str((int(char) - shift_1 + shift_2) % 10)
         else:
             decrypted_text += char
     with open(output_path, 'w', encoding="utf-8") as file:
         file.write(decrypted_text)
-def verify_files(file_1, file_2):
+def verify_files(file_1: str, file_2: str) -> bool:
     with open(file_1, 'r', encoding="utf-8") as f1, open(file_2, 'r', encoding="utf-8") as f2:
         content_1 = f1.read()
         content_2 = f2.read()
         if content_1 == content_2:
             print("The files are identical.")
+            return True
         elif content_1 != content_2:
             errors = 0
             for i, char in enumerate(content_1):
                 if i >= len(content_2) or char != content_2[i]:
                     errors += 1
             print(f"The files are not identical. Number of errors found: {errors}")
+            return False
 encrypt_file(shift_1, shift_2, raw_text, encrypted_text)
 decrypt_file(shift_1, shift_2, encrypted_text, decrypted_text)
 verify_files(raw_text, decrypted_text)
