@@ -53,8 +53,44 @@ def tokens_to_string(tokens):
             )
 
     return " ".join(output)
+def parse_term(tokens, pos):
+    if tokens[pos][0] == "NUM":
+        value = int(tokens[pos][1])
+        return ("number", value), pos + 1
 
+    raise ValueError("Expected number")
 
+def parse_eval(tokens, pos):
+    left, pos = parse_term(tokens, pos)
+
+    while (
+        tokens[pos][0] == "OP"
+        and tokens[pos][1] in "+-"
+    ):
+        op = tokens[pos][1]
+        pos += 1
+
+        right, pos = parse_term(tokens, pos)
+
+        left = ("binary", op, left, right)
+
+    return left, pos
+
+def tree_to_string(tree):
+
+    if tree[0] == "number":
+        return tree[1]
+
+    if tree[0] == "neg":
+        return f"(neg {tree_to_string(tree[1])})"
+
+    if tree[0] == "binary":
+        operator = tree[1]
+
+        left = tree_to_string(tree[2])
+        right = tree_to_string(tree[3])
+
+        return f"({operator} {left} {right})"
 def evaluate_file(content):
     results = []
     questions = content.splitlines()
@@ -62,7 +98,10 @@ def evaluate_file(content):
         try:
             tokens = tokenize(question)
             token_string = tokens_to_string(tokens)
-            results.append(f"Question: {question}\nTokens: {token_string}\n")
+            tree, pos = parse_eval(tokens, 0)
+            if tokens[pos][0] != "END":
+                raise ValueError("Unexpected token")
+            results.append(f"Question: {question}\nTokens: {token_string}\nTree: {tree_to_string(tree)}\n")
         except ValueError as e:
             results.append(f"Question: {question}\nError: {str(e)}\n")
 
@@ -76,11 +115,12 @@ welcome_banner()
 try:
     with open(input_text, "r") as file:
         content = file.read()
-        print("Input file Exists and read successfully.")
+        print(f"Input file {input_text} Exists and read successfully".center(58))
 except FileNotFoundError:
     with open(sample_input, "r") as file:
         content = file.read()
-        print("Input file Doesnt Exist. Sample input file read successfully.")
+        print(f"Input file {input_text} Doesnt Exist".center(58))
+        print(f"Sample file {sample_input} read successfully".center(58))
 evaluate_file(content)
 
-print(f"Results written to {output_text} successfully.")
+print(f"Results written to {output_text} successfully.".center(58))
