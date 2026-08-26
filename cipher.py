@@ -7,7 +7,7 @@ def welcome_banner():
     width = 58
     print("=" * width)
     print("Encryption tool".center(width))
-    print("Enter values below to begin encryption".center(width))
+    print("Enter your values (non-negative integer) below to begin encryption".center(width))
     print("=" * width)
 # Function to handle non-negative integer input validation
 def get_shift_input(prompt_text: str) -> int:
@@ -22,80 +22,69 @@ def get_shift_input(prompt_text: str) -> int:
 #Display welcome banner
 welcome_banner()
 # Get user inputs using the helper function
-shift_1 = get_shift_input("Enter shift1 value (non-negative integer): ")
-shift_2 = get_shift_input("Enter shift2 value (non-negative integer): ")
+shift_1 = get_shift_input("Enter the first shift value: ")
+shift_2 = get_shift_input("Enter the second shift value: ")
 raw_text = 'raw_text.txt'
 encrypted_text = 'encrypted_text.txt'
 decrypted_text = 'decrypted_text.txt'
 def encrypt_file(shift_1, shift_2, input_path, output_path):
     with open(input_path, 'r', encoding="utf-8") as file:
         text = file.read()   
-    encryptedText = ''
+    encrypted_text = ''
     for i, char in enumerate(text):
-        if char.isalpha():
-            if char.islower():
-                if (ord(char) - 97) <= 13:
-                    encryptedText += chr((ord(char) + (shift_1 * shift_2)))
-                else:
-                    encryptedText += chr((ord(char) - (shift_1 + shift_2)))
-            elif char.isupper():
-                if (ord(char) - 65) <= 12:
-                    encryptedText += chr((ord(char) - shift_1))
-                else:
-                    encryptedText += chr((ord(char) + (shift_2**2)))
-            else:
-                print(f"ERROR: ALPHABET CHARACTER '{char}' IS NOT UPPER OR LOWER CASE")
+        if 'a' <= char <= 'n':
+            position = ord(char) - ord('a')
+            encrypted_text += chr(ord('a') + (position + shift_1 * shift_2) % 14)
+        elif 'o' <= char <= 'z':
+            position = ord(char) - ord('o')
+            encrypted_text += chr(ord('o') + (position - (shift_1 + shift_2)) % 12)
+        elif 'A' <= char <= 'M':
+            position = ord(char) - ord('A')
+            encrypted_text += chr(ord('A') + (position - shift_1) % 13)
+        elif 'N' <= char <= 'Z':
+            position = ord(char) - ord('N')
+            encrypted_text += chr(ord('N') + (position + shift_2 ** 2) % 13)
         elif char.isdigit():
-            encryptedText += str((int(char) + shift_1 - shift_2) % 10)
+            encrypted_text += str((int(char) + shift_1 - shift_2) % 10)
         else:
-            encryptedText += char
+            encrypted_text += char
             continue
     with open(output_path, 'w', encoding="utf-8") as file:
-        file.write(encryptedText)
-def create_decryption_map(shift_1, shift_2):
-    decrypt_map = {}
-    # Lowercase a-z
-    for char in "abcdefghijklmnopqrstuvwxyz":
-        if char <= 'n':
-            encrypted_char = chr(ord(char) + (shift_1 * shift_2))
-        else:
-            encrypted_char = chr(ord(char) - (shift_1 + shift_2))
-        if encrypted_char in decrypt_map:
-            print("COLLISION:",decrypt_map[encrypted_char],"and",char,"both encrypt to",repr(encrypted_char))
-        decrypt_map[encrypted_char] = char
-    for char in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
-        if char <= 'M':
-            encrypted_char = chr(ord(char) - shift_1)
-        else:
-            encrypted_char = chr(ord(char) + (shift_2 ** 2)) 
-        if encrypted_char in decrypt_map:
-            print("COLLISION:",decrypt_map[encrypted_char],"and",char,"both encrypt to",repr(encrypted_char))
-        decrypt_map[encrypted_char] = char
-    return decrypt_map
+        file.write(encrypted_text)
 def decrypt_file(shift_1, shift_2, input_path, output_path):
-    decrypt_map = create_decryption_map(shift_1, shift_2)
     with open(input_path, 'r', encoding="utf-8") as file:
         text = file.read()   
-    decryptedText = ''
+    decrypted_text = ''
     for char in text:
-        if char in decrypt_map:
-            decryptedText += decrypt_map[char]
+        if 'a' <= char <= 'n':
+                    position = ord(char) - ord('a')
+                    decrypted_text += chr(ord('a') + (position - shift_1 * shift_2) % 14)
+        elif 'o' <= char <= 'z':
+                    position = ord(char) - ord('o')
+                    decrypted_text += chr(ord('o') + (position + (shift_1 + shift_2)) % 12)
+        elif 'A' <= char <= 'M':
+                    position = ord(char) - ord('A')
+                    decrypted_text += chr(
+                        ord('A') + (position + shift_1) % 13)
+        elif 'N' <= char <= 'Z':
+                    position = ord(char) - ord('N')
+                    decrypted_text += chr(ord('N') + (position - shift_2 ** 2) % 13)
         elif char.isdigit():
-            decryptedText += str((int(char) - shift_1 + shift_2) % 10)
+            decrypted_text += str((int(char) - shift_1 + shift_2) % 10)
         else:
-            decryptedText += char
+            decrypted_text += char
     with open(output_path, 'w', encoding="utf-8") as file:
-        file.write(decryptedText)
-def verify_files(file1, file2):
-    with open(file1, 'r', encoding="utf-8") as f1, open(file2, 'r', encoding="utf-8") as f2:
-        content1 = f1.read()
-        content2 = f2.read()
-        if content1 == content2:
+        file.write(decrypted_text)
+def verify_files(file_1, file_2):
+    with open(file_1, 'r', encoding="utf-8") as f1, open(file_2, 'r', encoding="utf-8") as f2:
+        content_1 = f1.read()
+        content_2 = f2.read()
+        if content_1 == content_2:
             print("The files are identical.")
-        elif content1 != content2:
+        elif content_1 != content_2:
             errors = 0
-            for i, char in enumerate(content1):
-                if i >= len(content2) or char != content2[i]:
+            for i, char in enumerate(content_1):
+                if i >= len(content_2) or char != content_2[i]:
                     errors += 1
             print(f"The files are not identical. Number of errors found: {errors}")
 encrypt_file(shift_1, shift_2, raw_text, encrypted_text)
