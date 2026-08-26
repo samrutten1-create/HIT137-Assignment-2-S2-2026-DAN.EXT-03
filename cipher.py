@@ -7,7 +7,7 @@ def welcome_banner():
     width = 58
     print("=" * width)
     print("Encryption tool".center(width))
-    print("Enter values below to begin encryption".center(width))
+    print("Enter your values (non-negative integer) below to begin encryption".center(width))
     print("=" * width)
 # Function to handle non-negative integer input validation
 def get_shift_input(prompt_text: str) -> int:
@@ -22,8 +22,8 @@ def get_shift_input(prompt_text: str) -> int:
 #Display welcome banner
 welcome_banner()
 # Get user inputs using the helper function
-shift_1 = get_shift_input("Enter shift1 value (non-negative integer): ")
-shift_2 = get_shift_input("Enter shift2 value (non-negative integer): ")
+shift_1 = get_shift_input("Enter the first shift value: ")
+shift_2 = get_shift_input("Enter the second shift value: ")
 raw_text = 'raw_text.txt'
 encrypted_text = 'encrypted_text.txt'
 decrypted_text = 'decrypted_text.txt'
