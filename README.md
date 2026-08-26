@@ -1,5 +1,11 @@
 # HIT137-Assignment-2-S2-2026
 Python solutions for HIT137 Group Assignment 2 featuring a custom file encryption tool `cipher.py` and a functional recursive descent math expression evaluator `evaluator.py`.
+### Group Members:
+- Craig Brooks - S407148
+- Harrison Breen - S397322
+- Richard Tran - S384625
+- Sam Rutten - S332039
+
 
 ## Cipher Development History
 
@@ -15,5 +21,5 @@ The latest approach introduced a **decryption map**. The program generates a dic
 
 ## Evaluator Development History
 
-`evaluator.py` was initially created as a blank scaffold for Question 2. The first working approach added file handling to read `input.txt`, with `sample_input.txt` used as a fallback. Expressions are separated line-by-line and stored for processing. Python's `eval()` is currently used as a temporary method to test expression evaluation and error handling. Results are stored as dictionaries and written to `output.txt` using the required Input, Tree, Tokens and Result format. Tree and token generation are still under development, with the next stage being replacement of `eval()` with the required recursive-descent parser.
+Development of `evaluator.py` is as follows. The first working approach added file handling to read `input.txt`, with `sample_input.txt` used as a fallback. Expressions are separated line-by-line and stored for processing. Python's `eval()` is currently used as a temporary method to test expression evaluation and error handling. Results are stored as dictionaries and written to `output.txt` using the required Input, Tree, Tokens and Result format. Tree and token generation are still under development, with the next stage being replacement of `eval()` with the required recursive-descent parser.
 
