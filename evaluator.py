@@ -61,9 +61,7 @@ def tokens_to_string(tokens):
         if token_type == "END":
             output.append("[END]")
         else:
-            output.append(
-                f"[{token_type}:{token_value}]"
-            )
+            output.append(f"[{token_type}:{token_value}]")
 
     return " ".join(output)
 """
@@ -97,57 +95,56 @@ def parse_power(tokens, pos):
     # Parse exponentiation. Calling parse_unary makes ^ right-associative
     left, pos = parse_primary(tokens, pos)
 
-    if (
-        tokens[pos][0] == "OP"
-        and tokens[pos][1] == "^"
-    ):
+    if tokens[pos][0] == "OP" and tokens[pos][1] == "^":
         pos += 1
-
         right, pos = parse_unary(tokens, pos)
-
         left = ("binary", "^", left, right)
 
     return left, pos
 
 def parse_unary(tokens, pos):
     # does unary -5, --5 and -(3 + 4)
-    if (
-        tokens[pos][0] == "OP"
-        and tokens[pos][1] == "-"
-    ):
+    if tokens[pos][0] == "OP" and tokens[pos][1] == "-":
         pos += 1
-
         operand, pos = parse_unary(tokens, pos)
-
         return ("neg", operand), pos
-
     return parse_power(tokens, pos)
 
 def parse_term(tokens, pos):
     # does *, / and % before + and -
     left, pos = parse_unary(tokens, pos)
+    # Normal *, / and %
+    while True:
+        if tokens[pos][0] == "OP" and tokens[pos][1] in "*/%":
 
-    while (
-        tokens[pos][0] == "OP"
-        and tokens[pos][1] in "*/%"
-    ):
-        op = tokens[pos][1]
-        pos += 1
+            op = tokens[pos][1]
+            pos += 1
 
-        right, pos = parse_unary(tokens, pos)
+            right, pos = parse_unary(tokens, pos)
 
-        left = ("binary", op, left, right)
+            left = ("binary", op, left, right)
 
+            continue
+        # Implicit *: 2(3 + 4)
+        if tokens[pos][0] == "LPAREN":
+            right, pos = parse_unary(tokens, pos)
+
+            left = ("binary", "*", left, right)
+            continue
+                # Implicit *: (3 + 4)2
+        if tokens[pos][0] == "NUM" and tokens[pos - 1][0] == "RPAREN":
+            right, pos = parse_unary(tokens, pos)
+
+            left = ("binary", "*", left, right)
+            continue
+        break
     return left, pos
 
 def parse_eval(tokens, pos):
     # does + and -
     left, pos = parse_term(tokens, pos)
 
-    while (
-        tokens[pos][0] == "OP"
-        and tokens[pos][1] in "+-"
-    ):
+    while tokens[pos][0] == "OP" and tokens[pos][1] in "+-":
         op = tokens[pos][1]
         pos += 1
 
@@ -172,7 +169,41 @@ def tree_to_string(tree):
         right = tree_to_string(tree[3])
 
         return f"({op} {left} {right})"
-    
+def evaluate(tree):
+
+    # Num
+    if tree[0] == "number":
+        return tree[1]
+    # neg
+    if tree[0] == "neg":
+        return -evaluate(tree[1])
+    #Binary
+    if tree[0] == "binary":
+        op = tree[1]
+
+        left = evaluate(tree[2])
+        right = evaluate(tree[3])
+
+        if op == "+":
+            return left + right
+
+        if op == "-":
+            return left - right
+
+        if op == "*":
+            return left * right
+
+        if op == "/":
+            return left / right
+
+        if op == "%":
+            return left % right
+
+        if op == "^":
+            return left ** right
+
+    raise ValueError("Invalid tree")
+
 def evaluate_file(content):
     # Process each input 
     results = []
@@ -186,9 +217,13 @@ def evaluate_file(content):
             # A valid question must finish exactly at the END token
             if tokens[pos][0] != "END":
                 raise ValueError("Unexpected token")
-            results.append(f"Question: {question}\nTokens: {token_string}\nTree: {tree_to_string(tree)}\n")
+            try:
+                result = evaluate(tree)
+            except (ZeroDivisionError, ValueError) as e:
+                result = "**ERROR** " + str(e)
+            results.append(f"Question: {question}\nTree: {tree_to_string(tree)}\nTokens: {token_string}\nResult: {result}\n")
         except ValueError as e:
-            results.append(f"Question: {question}\nError: {str(e)}\n")
+            results.append(f"Question: {question}\nTree: **ERROR** {str(e)}\nTokens: **ERROR** {str(e)}\nResult: **ERROR** {str(e)}\n")
     try:
         with open(output_text, "w") as file:
             file.write("\n".join(results))

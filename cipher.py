@@ -6,9 +6,10 @@ function that verifies the decryption was successful."""
 def welcome_banner():
     width = 58
     print("=" * width)
-    print("Encryption tool".center(width))
-    print("Enter your values (non-negative integer) below to begin encryption".center(width))
+    print("| Encryption tool |".center(width))
     print("=" * width)
+    print("Enter your values (non-negative integer) below".center(width))
+    print('-' * width)
 # Function to handle non-negative integer input validation
 def get_shift_input(prompt_text: str) -> int:
     while True:
