@@ -220,10 +220,10 @@ def evaluate_file(content):
             try:
                 result = evaluate(tree)
             except (ZeroDivisionError, ValueError) as e:
-                result = "**ERROR** " + str(e)
-            results.append(f"Question: {question}\nTree: {tree_to_string(tree)}\nTokens: {token_string}\nResult: {result}\n")
+                result = "ERRORrequired Input, Tree, Tokens and Result format"
+            results.append(f"Input: {question}\nTree: {tree_to_string(tree)}\nTokens: {token_string}\nResult: {result}\n")
         except ValueError as e:
-            results.append(f"Question: {question}\nTree: **ERROR** {str(e)}\nTokens: **ERROR** {str(e)}\nResult: **ERROR** {str(e)}\n")
+            results.append(f"Input: {question}\nTree: ERROR\nTokens: ERROR\nResult: ERROR\n")
     try:
         with open(output_text, "w") as file:
             file.write("\n".join(results))
