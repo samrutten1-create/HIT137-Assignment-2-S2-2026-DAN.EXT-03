@@ -59,7 +59,14 @@ def parse_primary(tokens, pos):
 
         return ("number", value), pos + 1
 
-    raise ValueError("Expected number")
+    if tokens[pos][0] == "LPAREN":
+        pos += 1
+        tree, pos = parse_eval(tokens, pos)
+        if tokens[pos][0] != "RPAREN":
+            raise ValueError("Missing closing parenthesis")
+        pos += 1
+        return tree, pos
+    raise ValueError("Expected number or opening parenthesis")
 
 def parse_term(tokens, pos):
     left, pos = parse_primary(tokens, pos)
@@ -68,12 +75,12 @@ def parse_term(tokens, pos):
         tokens[pos][0] == "OP"
         and tokens[pos][1] in "*/%"
     ):
-        operator = tokens[pos][1]
+        op = tokens[pos][1]
         pos += 1
 
         right, pos = parse_primary(tokens, pos)
 
-        left = ("binary", operator, left, right)
+        left = ("binary", op, left, right)
 
     return left, pos
 
@@ -102,12 +109,12 @@ def tree_to_string(tree):
         return f"(neg {tree_to_string(tree[1])})"
 
     if tree[0] == "binary":
-        operator = tree[1]
+        op = tree[1]
 
         left = tree_to_string(tree[2])
         right = tree_to_string(tree[3])
 
-        return f"({operator} {left} {right})"
+        return f"({op} {left} {right})"
 def evaluate_file(content):
     results = []
     questions = content.splitlines()
