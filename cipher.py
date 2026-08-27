@@ -87,7 +87,7 @@ def verify_files(file_1: str, file_2: str) -> bool:
             for i, char in enumerate(content_1):
                 if i >= len(content_2) or char != content_2[i]:
                     errors += 1
-            print(f"The files are not identical. Number of errors found: {errors}")
+            print(f"The files are not identical, decryption not possible.\nNumber of errors found: {errors}")
             return False
 encrypt_file(shift_1, shift_2, raw_text, encrypted_text)
 decrypt_file(shift_1, shift_2, encrypted_text, decrypted_text)
