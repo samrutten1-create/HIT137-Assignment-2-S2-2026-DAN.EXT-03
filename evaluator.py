@@ -6,7 +6,7 @@ output_text = 'output.txt'
 def welcome_banner():
     width = 58
     print("=" * width)
-    print("Evaluation tool".center(width))
+    print("| Evaluation tool |".center(width))
     print("=" * width)
 
 def tokenize(question):
@@ -68,8 +68,22 @@ def parse_primary(tokens, pos):
         return tree, pos
     raise ValueError("Expected number or opening parenthesis")
 
+def parse_unary(tokens, pos):
+
+    if (
+        tokens[pos][0] == "OP"
+        and tokens[pos][1] == "-"
+    ):
+        pos += 1
+
+        operand, pos = parse_unary(tokens, pos)
+
+        return ("neg", operand), pos
+
+    return parse_primary(tokens, pos)
+
 def parse_term(tokens, pos):
-    left, pos = parse_primary(tokens, pos)
+    left, pos = parse_unary(tokens, pos)
 
     while (
         tokens[pos][0] == "OP"
@@ -78,7 +92,7 @@ def parse_term(tokens, pos):
         op = tokens[pos][1]
         pos += 1
 
-        right, pos = parse_primary(tokens, pos)
+        right, pos = parse_unary(tokens, pos)
 
         left = ("binary", op, left, right)
 
@@ -128,10 +142,12 @@ def evaluate_file(content):
             results.append(f"Question: {question}\nTokens: {token_string}\nTree: {tree_to_string(tree)}\n")
         except ValueError as e:
             results.append(f"Question: {question}\nError: {str(e)}\n")
-
-    with open(output_text, "w") as file:
-        file.write("\n".join(results))
-
+    try:
+        with open(output_text, "w") as file:
+            file.write("\n".join(results))
+            return True
+    except:
+        return False
 
 #main
 welcome_banner()
@@ -140,11 +156,16 @@ try:
     with open(input_text, "r") as file:
         content = file.read()
         print(f"Input file {input_text} Exists and read successfully".center(58))
+        print("-"*58)
 except FileNotFoundError:
     with open(sample_input, "r") as file:
         content = file.read()
         print(f"Input file {input_text} Doesnt Exist".center(58))
         print(f"Sample file {sample_input} read successfully".center(58))
-evaluate_file(content)
-
-print(f"Results written to {output_text} successfully.".center(58))
+        print("-"*58)
+if evaluate_file(content):
+    print(f"** Results written to {output_text} successfully **".center(58))
+    print("-"*58)
+else:
+    print(f"!!! Results failed to write to {output_text} !!!".center(58))
+    print("-"*58)
