@@ -64,6 +64,7 @@ def tokens_to_string(tokens):
             output.append(f"[{token_type}:{token_value}]")
 
     return " ".join(output)
+
 """
 phase relations
 
@@ -154,23 +155,28 @@ def parse_eval(tokens, pos):
 
     return left, pos
 
+def format_number(val: float) -> str:
+    if val % 1 == 0:
+        return str(int(val))
+    else:
+        return str(round(val, 4))
+    
 def tree_to_string(tree):
  # Convert the tuple tree into string
     if tree[0] == "number":
-        return tree[1]
+        return format_number(tree[1])
 
     if tree[0] == "neg":
         return f"(neg {tree_to_string(tree[1])})"
 
     if tree[0] == "binary":
         op = tree[1]
-
         left = tree_to_string(tree[2])
         right = tree_to_string(tree[3])
 
         return f"({op} {left} {right})"
+    
 def evaluate(tree):
-
     # Num
     if tree[0] == "number":
         return tree[1]
@@ -218,9 +224,10 @@ def evaluate_file(content):
             if tokens[pos][0] != "END":
                 raise ValueError("Unexpected token")
             try:
-                result = evaluate(tree)
+                raw_result = evaluate(tree)
+                result = format_number(raw_result)
             except (ZeroDivisionError, ValueError) as e:
-                result = "ERRORrequired Input, Tree, Tokens and Result format"
+                result = "ERROR"
             results.append(f"Input: {question}\nTree: {tree_to_string(tree)}\nTokens: {token_string}\nResult: {result}\n")
         except ValueError as e:
             results.append(f"Input: {question}\nTree: ERROR\nTokens: ERROR\nResult: ERROR\n")
