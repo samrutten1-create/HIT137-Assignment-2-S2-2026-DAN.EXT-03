@@ -2,6 +2,7 @@
 sampleInput = 'sample_input.txt'
 inputText = 'input.txt'
 outputText = 'output.txt'
+
 try:
     with open(inputText, "r") as file:
         content = file.read()
