@@ -26,7 +26,7 @@ def get_shift_input(prompt_text: str) -> int:
             print("That was not a non-negative integer! Please enter a number 0 or greater")
 
 
-def encrypt_file(shift_1: int,shift_2: int,input_path: str,output_path: str) -> None:
+def encrypt_file(shift_1: int, shift_2: int, input_path: str, output_path: str) -> None:
     """
     Reads text from input_path, applies specific shift rules to characters 
     based on their category, and writes the encrypted text to output_path.
@@ -63,7 +63,7 @@ def encrypt_file(shift_1: int,shift_2: int,input_path: str,output_path: str) -> 
         # Special characters and whitespace remain unchanged
         else:
             encrypted_text += char
-            continue
+            
 
     with open(output_path, 'w', encoding="utf-8") as file:
         file.write(encrypted_text)
@@ -120,16 +120,21 @@ def verify_files(file_1: str, file_2: str) -> bool:
     with open(file_1, 'r', encoding="utf-8") as f1, open(file_2, 'r', encoding="utf-8") as f2:
         content_1 = f1.read()
         content_2 = f2.read()
-        if content_1 == content_2:
-            print("Match confirmed: Decrypted text matches the original.")
-            return True
-        elif content_1 != content_2:
-            errors = 0
-            for i, char in enumerate(content_1):
-                if i >= len(content_2) or char != content_2[i]:
-                    errors += 1
-            print(f"The files are not identical, decryption not possible.\nNumber of errors found: {errors}")
-            return False
+    if content_1 == content_2:
+        print("Match confirmed: Decrypted text matches the original.")
+        return True
+    errors = 0
+
+    for i, char in enumerate(content_1):
+        if i >= len(content_2) or char != content_2[i]:
+            errors += 1
+
+        # Count any extra characters in the decrypted file
+    if len(content_2) > len(content_1):
+        errors += len(content_2) - len(content_1)
+
+    print("The files are not identical.\n" f"Number of errors found: {errors}")
+    return False
 
 
 welcome_banner()

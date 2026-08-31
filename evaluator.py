@@ -234,7 +234,7 @@ def evaluate(tree):
     raise ValueError("Invalid tree")
 
 
-def evaluate_file(input_path: str) -> list:
+def evaluate_file(input_path: str) -> list[dict]:
     """Reads math expressions line-by-line from the input file, parses and evaluates 
     them, writes structured text blocks to output.txt, and returns a list of dictionaries.
     """
