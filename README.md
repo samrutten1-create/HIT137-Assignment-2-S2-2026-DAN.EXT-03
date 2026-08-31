@@ -27,3 +27,6 @@ Development of `evaluator.py` is as follows. The first working approach added fi
 
 The evaluator was then rebuilt using the **recursive-descent parser**. A tokenizer was added to identify numbers, operators and parentheses. Separate functions were introduced for each level: addition/subtraction, multiplication/division/modulo, unary negation, exponentiation and primary expressions.
 
+Development then added nested parentheses, unary negatives such as `-5` and `--5`, right-associative exponentiation, and implicit multiplication such as `2(3+4)` and `(3+4)2`.
+
+The current version also includes parse-tree formatting, recursive evaluation of the generated tree, handling for invalid expressions and division by zero, the four-line `Input`, `Tree`, `Tokens`, `Result` output, and a returned list of dictionaries.
