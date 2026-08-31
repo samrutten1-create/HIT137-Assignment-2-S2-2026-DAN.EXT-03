@@ -17,9 +17,13 @@ Input handling was then improved by adding a function that only accepts non-nega
 
 During testing, `encrypted_text.txt` and `decrypted_text.txt` were removed from Git tracking because they are generated automatically whenever the program runs.
 
-The latest approach introduced a **decryption map**. The program generates a dictionary mapping encrypted characters back to their original characters. This made the decryption code simpler and also revealed an important problem: some shift values can cause two different original letters to encrypt to the same character. Collision detection was therefore added to identify these cases.
+A decryption map and collision detector were then introduced. This revealed that wrapping characters across the entire alphabet allowed characters from different alphabet groups to encrypt to the same value resulting in no notable improvement from the trial that reached **241 errors**.
+
+After reviewing lecturer feedback and the Week 3 `EncryptDecrypt.py` example, the approach was changed so each character wraps within their 'range' : `a-n`, `o-z`, `A-M`, and `N-Z`. This prevented the groups from overlapping and allows the encryption to be reversed directly without a decryption map (then removed).
 
 ## Evaluator Development History
 
-Development of `evaluator.py` is as follows. The first working approach added file handling to read `input.txt`, with `sample_input.txt` used as a fallback. Expressions are separated line-by-line and stored for processing. Python's `eval()` is currently used as a temporary method to test expression evaluation and error handling. Results are stored as dictionaries and written to `output.txt` using the required Input, Tree, Tokens and Result format. Tree and token generation are still under development, with the next stage being replacement of `eval()` with the required recursive-descent parser.
+Development of `evaluator.py` is as follows. The first working approach added file handling to read `input.txt`, with `sample_input.txt` used as a fallback. Expressions are separated line-by-line and stored for processing. Python's `eval()` was used as a temporary method to test expression evaluation and error handling. Results are stored as dictionaries and written to `output.txt` using the required Input, Tree, Tokens and Result format.
+
+The evaluator was then rebuilt using the **recursive-descent parser**. A tokenizer was added to identify numbers, operators and parentheses. Separate functions were introduced for each level: addition/subtraction, multiplication/division/modulo, unary negation, exponentiation and primary expressions.
 
