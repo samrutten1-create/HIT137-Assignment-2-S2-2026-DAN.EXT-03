@@ -35,12 +35,12 @@ Chosen to exercise every character category the cipher needs to handle:
 
 | # | shift_1 | shift_2 | Purpose | Result |
 |---|---------|---------|---------|--------|
-| 1 | 0 | 0 | Edge case: no shift at all should still round-trip (identity case) | ✅ Match confirmed |
-| 2 | 5 | 3 | Typical small values | ✅ Match confirmed |
-| 3 | 100 | 50 | Large shift values (well beyond alphabet length) | ✅ Match confirmed |
-| 4 | 1 | 13 | shift_2 much larger than shift_1 | ✅ Match confirmed |
-| 5 | 20 | 1 | shift_1 much larger than shift_2 | ✅ Match confirmed |
-| 6 | -5, "abc", then 7, 2 | — | Invalid input handling: negative number, then non-numeric input, before a valid value | ✅ Correctly re-prompted twice, then succeeded |
+| 1 | 0 | 0 | Edge case: no shift at all should still round-trip (identity case) | Match confirmed |
+| 2 | 5 | 3 | Typical small values | Match confirmed |
+| 3 | 100 | 50 | Large shift values (well beyond alphabet length) | Match confirmed |
+| 4 | 1 | 13 | shift_2 much larger than shift_1 | Match confirmed |
+| 5 | 20 | 1 | shift_1 much larger than shift_2 | Match confirmed |
+| 6 | -5, "abc", then 7, 2 | — | Invalid input handling: negative number, then non-numeric input, before a valid value | Correctly re-prompted twice, then succeeded |
 
 **Result: 6/6 test cases passed.** `verify_files()` reported `"Match confirmed: Decrypted text matches the original."` in every case, and no test triggered the `"files are not identical"` branch.
 
