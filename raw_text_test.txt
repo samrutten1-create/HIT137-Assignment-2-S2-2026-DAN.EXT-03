@@ -1,0 +1,10 @@
+The Quick Brown Fox Jumps Over The Lazy Dog.
+abcdefghijklmnopqrstuvwxyz
+ABCDEFGHIJKLMNOPQRSTUVWXYZ
+0123456789
+Special characters: @#$%^&*()_+-={}[]|\:;"'<>,.?/
+Tabs	and	spaces   mixed together.
+Line with a blank line following:
+
+Edge letters: a n o z A M N Z 0 9
+Mixed CaSe WoRDs and Numb3rs1 T0geth3r.
