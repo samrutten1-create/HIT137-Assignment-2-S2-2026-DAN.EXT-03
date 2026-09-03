@@ -17,3 +17,77 @@ The latest approach introduced a **decryption map**. The program generates a dic
 
 `evaluator.py` was initially created as a blank scaffold for Question 2. The first working approach added file handling to read `input.txt`, with `sample_input.txt` used as a fallback. Expressions are separated line-by-line and stored for processing. Python's `eval()` is currently used as a temporary method to test expression evaluation and error handling. Results are stored as dictionaries and written to `output.txt` using the required Input, Tree, Tokens and Result format. Tree and token generation are still under development, with the next stage being replacement of `eval()` with the required recursive-descent parser.
 
+## Test input file (`raw_text.txt`)
+
+Chosen to exercise every character category the cipher needs to handle:
+
+- A full sentence with mixed-case words and punctuation
+- Every lowercase letter a–z (both halves: a–n and o–z)
+- Every uppercase letter A–Z (both halves: A–M and N–Z)
+- Every digit 0–9
+- Punctuation and symbols (`@#$%^&*()_+-={}[]|\:;"'<>,.?/`)
+- Tabs and multiple spaces
+- A blank line
+- Specific boundary letters (`a n o z A M N Z`) and boundary digits (`0 9`)
+- Mixed-case words with embedded numbers
+
+## Test cases
+
+| # | shift_1 | shift_2 | Purpose | Result |
+|---|---------|---------|---------|--------|
+| 1 | 0 | 0 | Edge case: no shift at all should still round-trip (identity case) | ✅ Match confirmed |
+| 2 | 5 | 3 | Typical small values | ✅ Match confirmed |
+| 3 | 100 | 50 | Large shift values (well beyond alphabet length) | ✅ Match confirmed |
+| 4 | 1 | 13 | shift_2 much larger than shift_1 | ✅ Match confirmed |
+| 5 | 20 | 1 | shift_1 much larger than shift_2 | ✅ Match confirmed |
+| 6 | -5, "abc", then 7, 2 | — | Invalid input handling: negative number, then non-numeric input, before a valid value | ✅ Correctly re-prompted twice, then succeeded |
+
+**Result: 6/6 test cases passed.** `verify_files()` reported `"Match confirmed: Decrypted text matches the original."` in every case, and no test triggered the `"files are not identical"` branch.
+
+## Evidence: sample output (shift_1=5, shift_2=3)
+
+**Original (`raw_text.txt`):**
+```
+The Quick Brown Fox Jumps Over The Lazy Dog.
+abcdefghijklmnopqrstuvwxyz
+ABCDEFGHIJKLMNOPQRSTUVWXYZ
+0123456789
+```
+
+**Encrypted (`encrypted_text.txt`):**
+```
+Pif Zyjdl Jvsoa Asp Eyntw Xzfv Pif Gbrq Lsh.
+bcdefghijklmnastuvwxyzopqr
+IJKLMABCDEFGHWXYZNOPQRSTUV
+2345678901
+```
+
+**Decrypted (`decrypted_text.txt`):**
+```
+The Quick Brown Fox Jumps Over The Lazy Dog.
+abcdefghijklmnopqrstuvwxyz
+ABCDEFGHIJKLMNOPQRSTUVWXYZ
+0123456789
+```
+
+A `diff` between `raw_text.txt` and `decrypted_text.txt` confirmed the files are
+**byte-for-byte identical** — every character, space, tab, and newline round-tripped
+correctly, not just the visible text.
+
+## Test 6 console output (invalid input handling)
+
+```
+Enter the first shift value: That was not a non-negative integer! Please enter a number 0 or greater
+Enter the first shift value: That was not a non-negative integer! Please enter a number 0 or greater
+Enter the first shift value: Enter the second shift value: Match confirmed: Decrypted text matches the original.
+```
+
+Confirms `get_shift_input()` correctly rejects both a negative number (`-5`) and
+non-numeric text (`"abc"`) and keeps re-prompting until a valid value is entered,
+without crashing.
+
+## Conclusion
+
+Across zero, small, large, and asymmetric shift values, plus invalid-input
+handling, the cipher consistently encrypts and decrypts back to an exact match
+of the original file. No mismatches were found in any test.
